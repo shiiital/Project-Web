@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineMatch — Interactive Movie Recommender</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Background -->
+  <div class="bg-orb orb-pink" aria-hidden="true"></div>
+  <div class="bg-orb orb-purple" aria-hidden="true"></div>
+  <div class="bg-orb orb-cyan" aria-hidden="true"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-content">
+
+      <div class="logo">
+        <span class="logo-badge">🎬</span>
+        <h1>Cine<span class="gradient-text">Match</span></h1>
+      </div>
+
+      <div class="nav-actions">
+        <button id="openQuizBtn" type="button" class="btn btn-primary">
+          ✨ Pick For Me
+        </button>
+
+        <button id="openWatchlistBtn" type="button" class="btn btn-glass">
+          💖 Watchlist
+          <span id="watchlistCount" class="badge">0</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+      <div class="hero-pill">
+        🐰 Curated Cinema & Smart Discovery
+      </div>
+
+      <h2>
+        Find Your Next
+        <span class="gradient-text">Favorite Movie</span>
+      </h2>
+
+      <p>
+        Search any movie, actor, director, or plot—filter by vibe and rating,
+        or take the 3-step quiz.
+      </p>
+
+      <!-- Group Members -->
+      <div class="team-members">
+        <h3>Meet Our Team</h3>
+        <p>
+          Shital Achhami
+          <span>·</span>
+          Jharna Kumari Pulami Magar
+          <span>·</span>
+          Dipika Aryal
+        </p>
+      </div>
+
+      <!-- Search and Filters -->
+      <div class="controls-bar">
+
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search any movie, actor, director, year, or plot..."
+            aria-label="Search movies"
+            autocomplete="off"
+          />
+
+          <button
+            type="button"
+            id="clearSearchBtn"
+            class="clear-search-btn"
+            aria-label="Clear search"
+          >✕</button>
+
+          <div
+            id="searchSuggestions"
+            class="search-suggestions"
+            role="listbox"
+          ></div>
+        </div>
+
+        <select id="moodFilter" aria-label="Filter by mood">
+          <option value="all">🎭 All Moods</option>
+          <option value="Feel-Good">😊 Feel-Good</option>
+          <option value="Mind-Bending">🧠 Mind-Bending</option>
+          <option value="Thrilling">⚡ Thrilling</option>
+          <option value="Emotional">🥹 Emotional</option>
+        </select>
+
+        <select id="ratingFilter" aria-label="Filter by minimum rating">
+          <option value="0">⭐ Any Rating</option>
+          <option value="8.0">⭐ 8.0+ IMDb</option>
+          <option value="8.5">🌟 8.5+ IMDb</option>
+        </select>
+
+      </div>
+
+      <!-- Genre Filters -->
+      <div
+        id="genrePills"
+        class="genre-pills"
+        role="group"
+        aria-label="Filter by genre"
+      >
+        <button type="button" class="pill active" data-genre="all">All</button>
+        <button type="button" class="pill" data-genre="Sci-Fi">🚀 Sci-Fi</button>
+        <button type="button" class="pill" data-genre="Drama">🎭 Drama</button>
+        <button type="button" class="pill" data-genre="Animation">✨ Animation</button>
+        <button type="button" class="pill" data-genre="Thriller">🔪 Thriller</button>
+        <button type="button" class="pill" data-genre="Comedy">🍿 Comedy</button>
+        <button type="button" class="pill" data-genre="Romance">💕 Romance</button>
+      </div>
+
+    </section>
+
+    <!-- Movie Results -->
+    <section class="results-section">
+
+      <div class="results-header">
+        <h3 id="resultsTitle">All Movies</h3>
+        <span id="resultsCount" class="count-pill">
+          Showing 0 movies
+        </span>
+      </div>
+
+      <div id="movieGrid" class="movie-grid"></div>
+
+    </section>
+
+    <!-- Suggest a Movie Form -->
+    <section class="suggest-section">
+
+      <div class="suggest-card">
+
+        <div class="suggest-header">
+          <h3>🍿 Suggest a Movie to Our Database</h3>
+          <p class="muted-text">
+            Add your favorite hidden gem directly to the live catalog above.
+          </p>
+        </div>
+
+        <form id="suggestForm" novalidate>
+
+          <div class="form-grid">
+
+            <div class="form-group">
+              <label for="movieTitle">Movie Title *</label>
+              <input type="text" id="movieTitle" placeholder="e.g., Barbie" />
+              <small class="error-msg" id="titleError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="movieYear">Release Year *</label>
+              <input type="number" id="movieYear" placeholder="e.g., 2023" />
+              <small class="error-msg" id="yearError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="movieGenre">Genre *</label>
+              <select id="movieGenre">
+                <option value="">Select Genre</option>
+                <option value="Sci-Fi">Sci-Fi</option>
+                <option value="Drama">Drama</option>
+                <option value="Animation">Animation</option>
+                <option value="Thriller">Thriller</option>
+                <option value="Comedy">Comedy</option>
+                <option value="Romance">Romance</option>
+              </select>
+              <small class="error-msg" id="genreError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="movieMood">Mood *</label>
+              <select id="movieMood">
+                <option value="">Select Mood</option>
+                <option value="Feel-Good">Feel-Good</option>
+                <option value="Mind-Bending">Mind-Bending</option>
+                <option value="Thrilling">Thrilling</option>
+                <option value="Emotional">Emotional</option>
+              </select>
+              <small class="error-msg" id="moodError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="movieRating">IMDb Rating (1.0 - 10.0) *</label>
+              <input type="number" step="0.1" id="movieRating" placeholder="e.g., 8.2" />
+              <small class="error-msg" id="ratingError"></small>
+            </div>
+
+            <div class="form-group">
+              <label for="movieDirector">Director *</label>
+              <input type="text" id="movieDirector" placeholder="e.g., Greta Gerwig" />
+              <small class="error-msg" id="directorError"></small>
+            </div>
+
+          </div>
+
+          <div class="form-group full-width">
+            <label for="movieDesc">Short Synopsis *</label>
+            <textarea
+              id="movieDesc"
+              rows="2"
+              placeholder="Write a brief 1-2 sentence summary..."
+            ></textarea>
+            <small class="error-msg" id="descError"></small>
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            ✨ Add Movie to Catalog
+          </button>
+
+          <p id="formSuccess" class="success-msg" role="status"></p>
+
+        </form>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Watchlist Drawer -->
+  <aside id="watchlistDrawer" class="drawer" aria-hidden="true">
+
+    <div class="drawer-header">
+      <h3>💖 My Watchlist</h3>
+
+      <button
+        type="button"
+        id="closeWatchlistBtn"
+        class="icon-btn"
+        aria-label="Close watchlist"
+      >✕</button>
+    </div>
+
+    <div id="watchlistItems" class="drawer-body"></div>
+
+  </aside>
+
+  <div id="drawerBackdrop" class="backdrop"></div>
+
+  <!-- Recommendation Quiz -->
+  <div id="quizModal" class="modal" aria-hidden="true">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3>✨ Smart Movie Matcher</h3>
+
+        <button
+          type="button"
+          id="closeQuizBtn"
+          class="icon-btn"
+          aria-label="Close quiz"
+        >✕</button>
+      </div>
+
+      <div id="quizBody" class="modal-body"></div>
+
+    </div>
+
+  </div>
+
+  <!-- Movie Details Modal -->
+  <div id="detailModal" class="modal" aria-hidden="true">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h3 id="detailTitle">Movie Title</h3>
+
+        <button
+          type="button"
+          id="closeDetailBtn"
+          class="icon-btn"
+          aria-label="Close details"
+        >✕</button>
+      </div>
+
+      <div id="detailBody" class="modal-body"></div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>CineMatch — Interactive Web Programming Project 💖</p>
+    <p>Created by Shital Achhami, Jharna Kumari Pulami Magar & Dipika Aryal</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+
+</body>
+</html>
